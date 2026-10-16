@@ -1,0 +1,22 @@
+# macOS
+.DS_Store
+
+# Swift Package Manager
+.build/
+.swiftpm/
+Package.resolved
+
+# Built app bundle + release zip (shipped via GitHub Releases, not committed)
+Jotvella.app/
+Jotvella-*.zip
+
+# Rust (OneNote importer)
+Tools/OneNoteImporter/target/
+
+# Xcode / misc
+*.xcodeproj
+DerivedData/
+*.xcuserstate
+
+# Exported notes dump (not source; may contain personal content)
+Jotvella Notes.html
