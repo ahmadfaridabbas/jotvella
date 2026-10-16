@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Jotvella — Notes, at home</title>
 <meta name="description" content="A personal knowledge-base and note-taking app for macOS. Notebooks, free-canvas pages, encryption, OneNote import — local-first and calm by default.">
-<link rel="icon" href="assets/icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <meta property="og:title" content="Jotvella — Notes, at home">
 <meta property="og:description" content="A personal knowledge-base and note-taking app for macOS. Local-first. Calm by default.">
 <meta property="og:image" content="assets/workspace.png">
@@ -46,7 +47,7 @@ img{display:block;max-width:100%}
 nav{position:sticky;top:0;z-index:40;background:#f4f1eae6;backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
 .nav-in{display:flex;align-items:center;gap:14px;height:66px}
 .mark{display:flex;align-items:center;gap:11px;font-weight:700;letter-spacing:-.3px}
-.glyph{width:30px;height:30px;border-radius:9px;background:var(--accent);color:#fff;display:grid;place-items:center;font-size:17px;box-shadow:0 6px 16px -6px var(--accent)}
+.glyph{width:30px;height:30px;border-radius:9px;object-fit:cover;display:block;box-shadow:0 6px 16px -8px #2a241388}
 .nav-links{margin-left:auto;display:flex;gap:28px;align-items:center;font-size:14px;color:var(--muted);font-weight:500}
 .nav-links a:hover{color:var(--ink)}
 .nav-cta{background:var(--ink);color:var(--paper);padding:9px 16px;border-radius:999px;font-weight:600;font-size:13px}
@@ -141,7 +142,7 @@ footer{padding:56px 0 70px;border-top:1px solid var(--line)}
 
 <nav>
   <div class="wrap nav-in">
-    <a class="mark" href="#top"><span class="glyph">▣</span> Jotvella</a>
+    <a class="mark" href="#top"><img class="glyph" src="assets/mark.png" width="30" height="30" alt="Jotvella icon"> Jotvella</a>
     <div class="nav-links">
       <a href="#pages">The pages</a>
       <a href="#features">Features</a>
@@ -238,7 +239,7 @@ footer{padding:56px 0 70px;border-top:1px solid var(--line)}
 
 <footer>
   <div class="wrap foot-in">
-    <a class="mark" href="#top"><span class="glyph">▣</span> Jotvella</a>
+    <a class="mark" href="#top"><img class="glyph" src="assets/mark.png" width="30" height="30" alt="Jotvella icon"> Jotvella</a>
     <div class="foot-links">
       <a href="https://github.com/ahmadfaridabbas/jotvella">GitHub</a>
       <a href="https://github.com/ahmadfaridabbas/jotvella/releases">Releases</a>

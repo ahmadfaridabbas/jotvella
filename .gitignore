@@ -1,6 +1,11 @@
 # macOS
 .DS_Store
 
+# Editor / tooling config (not part of the project)
+.kiro/
+.vscode/
+.idea/
+
 # Swift Package Manager
 .build/
 .swiftpm/
@@ -20,3 +25,7 @@ DerivedData/
 
 # Exported notes dump (not source; may contain personal content)
 Jotvella Notes.html
+
+# Redundant root duplicates — the website lives in docs/
+/index.html
+/Jotvella-macOS-workspace.png
