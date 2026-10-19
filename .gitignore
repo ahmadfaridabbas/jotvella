@@ -23,9 +23,7 @@ Tools/OneNoteImporter/target/
 DerivedData/
 *.xcuserstate
 
-# Exported notes dump (not source; may contain personal content)
-Jotvella Notes.html
+# Local exports (may contain personal content)
+/Local Data/
 
-# Redundant root duplicates — the website lives in docs/
-/index.html
 /Jotvella-macOS-workspace.png

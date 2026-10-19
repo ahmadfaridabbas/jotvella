@@ -65,6 +65,7 @@ Sources/Jotvella/        Swift app source (SwiftUI)
 Tools/OneNoteImporter/   Rust OneNote importer (uses onenote.rs, MPL-2.0)
 Packaging/Info.plist     App bundle metadata
 Assets/                  App icon (iconset + 1024px PNG)
+Local Data/              Local exports; excluded from version control
 Makefile                 Build orchestration
 docs/                    GitHub Pages website
 ```

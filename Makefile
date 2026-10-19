@@ -54,7 +54,7 @@ app: importer
 	cp "$(BIN_DIR)/Jotvella" "$(APP_MACOS)/Jotvella"
 	cp -R "$(BIN_DIR)/$(RESOURCE_BUNDLE)" "$(APP_MACOS)/$(RESOURCE_BUNDLE)"
 	cp Packaging/Info.plist "$(APP_CONTENTS)/Info.plist"
-	iconutil -c icns "$(ICONSET)" -o "$(APP_RESOURCES)/Jotvella.icns"
+	iconutil -c icns "$(ICONSET)" -o "$(APP_RESOURCES)/JotvellaAppIcon.icns"
 	printf 'APPL????' > "$(APP_CONTENTS)/PkgInfo"
 	codesign --force --deep --sign - "$(APP)" 2>/dev/null || true
 	@echo "Built $(APP)"

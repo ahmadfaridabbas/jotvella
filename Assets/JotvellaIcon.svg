@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 512 512">
+<defs>
+<linearGradient id="gb" x1="0" y1="0" x2="0.15" y2="1"><stop offset="0" stop-color="#555867"></stop><stop offset="0.55" stop-color="#2A2C35"></stop><stop offset="1" stop-color="#121317"></stop></linearGradient>
+<radialGradient id="gt" cx="0.5" cy="0" r="0.85"><stop offset="0" stop-color="#fff" stop-opacity="0.30"></stop><stop offset="1" stop-color="#fff" stop-opacity="0"></stop></radialGradient>
+<radialGradient id="gw" cx="0.5" cy="1" r="0.7"><stop offset="0" stop-color="#FF5A4D" stop-opacity="0.30"></stop><stop offset="1" stop-color="#FF5A4D" stop-opacity="0"></stop></radialGradient>
+<linearGradient id="gp" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"></stop><stop offset="1" stop-color="#E3E6EE"></stop></linearGradient>
+<linearGradient id="gc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF8F7D"></stop><stop offset="1" stop-color="#EE3526"></stop></linearGradient>
+<linearGradient id="gr" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FAFBFD"></stop><stop offset="0.45" stop-color="#BCC1CD"></stop><stop offset="1" stop-color="#7C8292"></stop></linearGradient>
+<filter id="gs" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="14" stdDeviation="13" flood-color="#000" flood-opacity="0.55"></feDropShadow></filter>
+<symbol id="gi" viewBox="0 0 512 512">
+<rect width="512" height="512" rx="115" fill="url(#gb)"></rect>
+<rect width="512" height="512" rx="115" fill="url(#gt)"></rect>
+<rect width="512" height="512" rx="115" fill="url(#gw)"></rect>
+<rect x="136" y="122" width="240" height="300" rx="26" fill="#B9BDC9" transform="rotate(-5 256 272)"></rect>
+<rect x="136" y="122" width="240" height="300" rx="26" fill="#D4D7E0" transform="rotate(3 256 272)"></rect>
+<g filter="url(#gs)">
+<rect x="120" y="108" width="272" height="316" rx="28" fill="url(#gp)"></rect>
+<path d="M148 108 H364 Q392 108 392 136 V198 H120 V136 Q120 108 148 108 Z" fill="url(#gc)"></path>
+</g>
+<path d="M148 108 H364 Q392 108 392 136 V156 H120 V136 Q120 108 148 108 Z" fill="#fff" opacity="0.2"></path>
+<rect x="120" y="196" width="272" height="3" fill="#8F1F15" opacity="0.35"></rect>
+<ellipse cx="186" cy="148" rx="12" ry="9" fill="#7E1A12"></ellipse>
+<ellipse cx="256" cy="148" rx="12" ry="9" fill="#7E1A12"></ellipse>
+<ellipse cx="326" cy="148" rx="12" ry="9" fill="#7E1A12"></ellipse>
+<rect x="175" y="76" width="22" height="72" rx="11" fill="url(#gr)"></rect>
+<rect x="245" y="76" width="22" height="72" rx="11" fill="url(#gr)"></rect>
+<rect x="315" y="76" width="22" height="72" rx="11" fill="url(#gr)"></rect>
+<rect x="180" y="86" width="4" height="46" rx="2" fill="#fff" opacity="0.75"></rect>
+<rect x="250" y="86" width="4" height="46" rx="2" fill="#fff" opacity="0.75"></rect>
+<rect x="320" y="86" width="4" height="46" rx="2" fill="#fff" opacity="0.75"></rect>
+<rect x="160" y="234" width="124" height="20" rx="10" fill="#2B2D36"></rect>
+<rect x="160" y="276" width="192" height="14" rx="7" fill="#D9DCE5"></rect>
+<rect x="160" y="310" width="168" height="14" rx="7" fill="#D9DCE5"></rect>
+<rect x="160" y="344" width="104" height="14" rx="7" fill="#D9DCE5"></rect>
+<rect x="274" y="338" width="6" height="26" rx="3" fill="#F0392A"></rect>
+<rect x="1.500" y="1.500" width="509" height="509" rx="113.500" fill="none" stroke="#fff" stroke-opacity="0.28" stroke-width="3"></rect>
+</symbol>
+</defs>
+
+<rect width="512" height="512" rx="115" fill="url(#gb)"></rect>
+<rect width="512" height="512" rx="115" fill="url(#gt)"></rect>
+<rect width="512" height="512" rx="115" fill="url(#gw)"></rect>
+<rect x="136" y="122" width="240" height="300" rx="26" fill="#B9BDC9" transform="rotate(-5 256 272)"></rect>
+<rect x="136" y="122" width="240" height="300" rx="26" fill="#D4D7E0" transform="rotate(3 256 272)"></rect>
+<g filter="url(#gs)">
+<rect x="120" y="108" width="272" height="316" rx="28" fill="url(#gp)"></rect>
+<path d="M148 108 H364 Q392 108 392 136 V198 H120 V136 Q120 108 148 108 Z" fill="url(#gc)"></path>
+</g>
+<path d="M148 108 H364 Q392 108 392 136 V156 H120 V136 Q120 108 148 108 Z" fill="#fff" opacity="0.2"></path>
+<rect x="120" y="196" width="272" height="3" fill="#8F1F15" opacity="0.35"></rect>
+<ellipse cx="186" cy="148" rx="12" ry="9" fill="#7E1A12"></ellipse>
+<ellipse cx="256" cy="148" rx="12" ry="9" fill="#7E1A12"></ellipse>
+<ellipse cx="326" cy="148" rx="12" ry="9" fill="#7E1A12"></ellipse>
+<rect x="175" y="76" width="22" height="72" rx="11" fill="url(#gr)"></rect>
+<rect x="245" y="76" width="22" height="72" rx="11" fill="url(#gr)"></rect>
+<rect x="315" y="76" width="22" height="72" rx="11" fill="url(#gr)"></rect>
+<rect x="180" y="86" width="4" height="46" rx="2" fill="#fff" opacity="0.75"></rect>
+<rect x="250" y="86" width="4" height="46" rx="2" fill="#fff" opacity="0.75"></rect>
+<rect x="320" y="86" width="4" height="46" rx="2" fill="#fff" opacity="0.75"></rect>
+<rect x="160" y="234" width="124" height="20" rx="10" fill="#2B2D36"></rect>
+<rect x="160" y="276" width="192" height="14" rx="7" fill="#D9DCE5"></rect>
+<rect x="160" y="310" width="168" height="14" rx="7" fill="#D9DCE5"></rect>
+<rect x="160" y="344" width="104" height="14" rx="7" fill="#D9DCE5"></rect>
+<rect x="274" y="338" width="6" height="26" rx="3" fill="#F0392A"></rect>
+<rect x="1.500" y="1.500" width="509" height="509" rx="113.500" fill="none" stroke="#fff" stroke-opacity="0.28" stroke-width="3"></rect>
+
+</svg>
