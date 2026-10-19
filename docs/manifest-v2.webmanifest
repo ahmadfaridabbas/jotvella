@@ -1,0 +1,31 @@
+{
+  "id": "https://ahmadfaridabbas.github.io/jotvella/",
+  "name": "Jotvella",
+  "short_name": "Jotvella",
+  "description": "A personal knowledge-base and note-taking app for macOS. Notes, at home.",
+  "start_url": "https://ahmadfaridabbas.github.io/jotvella/",
+  "scope": "https://ahmadfaridabbas.github.io/jotvella/",
+  "display": "standalone",
+  "background_color": "#141311",
+  "theme_color": "#141311",
+  "icons": [
+    {
+      "src": "apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
