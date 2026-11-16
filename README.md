@@ -77,7 +77,10 @@ under the MPL-2.0 license. See [`ThirdPartyLicenses/`](ThirdPartyLicenses/).
 
 ## License
 
-See repository for license details.
+Jotvella is released under the [MIT License](LICENSE). © 2026 Ahmad Farid Abbas.
+
+The bundled OneNote importer is a separate component under the MPL-2.0 license
+(see [Third-party](#third-party) above); it is not covered by the MIT License.
 
 ---
 

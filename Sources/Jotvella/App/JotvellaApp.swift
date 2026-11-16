@@ -31,6 +31,8 @@ struct JotvellaApp: App {
             CommandGroup(replacing: .newItem) {
                 Button("New Page") { store.addPage() }
                     .keyboardShortcut("n", modifiers: [.command])
+                Button("New Section") { store.addSection() }
+                    .keyboardShortcut("n", modifiers: [.command, .shift])
             }
             CommandGroup(replacing: .undoRedo) {
                 Button("Undo") { NSApp.sendAction(Selector(("undo:")), to: nil, from: nil) }

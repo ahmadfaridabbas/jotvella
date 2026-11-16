@@ -201,6 +201,76 @@ final class NotebookStore: ObservableObject {
         guard let notebookID = currentNotebook?.id, let ni = notebooks.firstIndex(where: { $0.id == notebookID }), let si = notebooks[ni].sections.firstIndex(where: { $0.id == selectedSection }) ?? notebooks[ni].sections.firstIndex(where: { $0.pages.contains(where: { $0.id == selectedPage }) }), let pi = notebooks[ni].sections[si].pages.firstIndex(where: { $0.id == selectedPage }) else { return }
         change(&notebooks[ni].sections[si].pages[pi]); notebooks[ni].sections[si].pages[pi].modified = .now
     }
+    /// Everything Select All + Delete removes from a page, including the picture files, so it can be undone.
+    struct PageContentSnapshot {
+        let pageID: UUID
+        let keepBlockID: UUID
+        let contentBlocks: [PageContentBlock]
+        let body: String
+        let richTextData: Data?
+        let tables: [PageTable]
+        let images: [PageImage]
+        let imageFiles: [String: Data]
+    }
+
+    private func locatePage(_ pageID: UUID) -> (notebook: Int, section: Int, page: Int)? {
+        for (n, notebook) in notebooks.enumerated() {
+            for (s, section) in notebook.sections.enumerated() {
+                if let p = section.pages.firstIndex(where: { $0.id == pageID }) { return (n, s, p) }
+            }
+        }
+        return nil
+    }
+
+    /// Removes the body, tables and pictures of a page, leaving one empty text block (`keepBlockID`).
+    /// The title and tags stay. Registers an undo (and, from that, a redo) with `undoManager`.
+    func clearPageContent(pageID: UUID, keeping keepBlockID: UUID, undoManager: UndoManager?) {
+        guard let at = locatePage(pageID) else { return }
+        let page = notebooks[at.notebook].sections[at.section].pages[at.page]
+        var files: [String: Data] = [:]
+        for image in page.images {
+            if let data = try? Data(contentsOf: imageURL(image)) { files[image.filename] = data }
+        }
+        let snapshot = PageContentSnapshot(pageID: pageID, keepBlockID: keepBlockID, contentBlocks: page.contentBlocks, body: page.body,
+                                           richTextData: page.richTextData, tables: page.tables, images: page.images, imageFiles: files)
+        for image in page.images { deleteImage(image.id, fromPageID: pageID) }
+        notebooks[at.notebook].sections[at.section].pages[at.page].contentBlocks = [.textBlock("", id: keepBlockID)]
+        notebooks[at.notebook].sections[at.section].pages[at.page].body = ""
+        notebooks[at.notebook].sections[at.section].pages[at.page].richTextData = nil
+        notebooks[at.notebook].sections[at.section].pages[at.page].tables = []
+        notebooks[at.notebook].sections[at.section].pages[at.page].modified = .now
+        undoManager?.registerUndo(withTarget: self) { store in store.restorePageContent(snapshot, undoManager: undoManager) }
+        undoManager?.setActionName("Delete Page Content")
+    }
+
+    func restorePageContent(_ snapshot: PageContentSnapshot, undoManager: UndoManager?) {
+        guard let at = locatePage(snapshot.pageID) else { return }
+        let resources = packageURL(for: notebooks[at.notebook].id).appendingPathComponent("Resources", isDirectory: true)
+        try? FileManager.default.createDirectory(at: resources, withIntermediateDirectories: true)
+        for (name, data) in snapshot.imageFiles { try? data.write(to: resources.appendingPathComponent(name)) }
+        notebooks[at.notebook].sections[at.section].pages[at.page].contentBlocks = snapshot.contentBlocks
+        notebooks[at.notebook].sections[at.section].pages[at.page].body = snapshot.body
+        notebooks[at.notebook].sections[at.section].pages[at.page].richTextData = snapshot.richTextData
+        notebooks[at.notebook].sections[at.section].pages[at.page].tables = snapshot.tables
+        notebooks[at.notebook].sections[at.section].pages[at.page].images = snapshot.images
+        notebooks[at.notebook].sections[at.section].pages[at.page].modified = .now
+        undoManager?.registerUndo(withTarget: self) { store in
+            store.clearPageContent(pageID: snapshot.pageID, keeping: snapshot.keepBlockID, undoManager: undoManager)
+        }
+        undoManager?.setActionName("Delete Page Content")
+    }
+
+    /// Selects the page with the given id, wherever it lives in the library. Used by page links.
+    func openPage(_ pageID: UUID) {
+        for notebook in notebooks {
+            for section in notebook.sections {
+                if let page = section.pages.first(where: { $0.id == pageID }) {
+                    select(page, section: section, notebook: notebook)
+                    return
+                }
+            }
+        }
+    }
     func addNotebook() {
         let section = NoteSection(name: "General", pages: [])
         let notebook = Notebook(name: "New Notebook", sections: [section])

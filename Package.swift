@@ -5,5 +5,8 @@ let package = Package(
     name: "Jotvella",
     platforms: [.macOS(.v13)],
     products: [.executable(name: "Jotvella", targets: ["Jotvella"])],
-    targets: [.executableTarget(name: "Jotvella", resources: [.copy("Resources/jotvella-one-importer")])]
+    targets: [
+        .executableTarget(name: "Jotvella", resources: [.copy("Resources/jotvella-one-importer")]),
+        .testTarget(name: "JotvellaTests", dependencies: ["Jotvella"])
+    ]
 )

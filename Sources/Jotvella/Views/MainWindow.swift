@@ -61,6 +61,9 @@ struct JotvellaWindow: View {
                 Button { store.addPage() } label: { Label("New Page", systemImage: "square.and.pencil") }
                     .keyboardShortcut("n", modifiers: [.command])
                     .help("Create a new page")
+                Button { store.addSection() } label: { Label("New Section", systemImage: "folder.badge.plus") }
+                    .keyboardShortcut("n", modifiers: [.command, .shift])
+                    .help("Create a new section in the current notebook")
                 Menu {
                     Button("OneNote Folder (.one files)…", systemImage: "square.and.arrow.down", action: importOneNoteSection)
                 } label: {
@@ -404,11 +407,11 @@ struct JotvellaWindow: View {
                 Text(deleteConfirmation?.message ?? "This item will be permanently deleted from this Mac.")
             }
 
-            HStack(spacing: 7) {
-                Image(systemName: "externaldrive.fill").font(.caption2)
-                Text("Stored on this Mac").font(.caption2)
-                Spacer()
+            VStack(alignment: .leading, spacing: 2) {
+                Text("One word at a time").font(.caption2.weight(.medium))
+                Text("MIT License • © 2026 Ahmad Farid Abbas").font(.caption2)
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
             .foregroundStyle(.tertiary)
             .padding(.horizontal, 17)
             .padding(.vertical, 11)
@@ -441,6 +444,10 @@ struct JotvellaWindow: View {
                         .font(.system(.title2).weight(.bold))
                         .lineLimit(1)
                     Spacer(minLength: 5)
+                    if store.selectedNotebook != nil {
+                        Button { store.addSection() } label: { Image(systemName: "folder.badge.plus") }
+                            .buttonStyle(.borderless).help("New section")
+                    }
                     Button { store.addPage() } label: { Image(systemName: "square.and.pencil") }
                         .buttonStyle(.borderless).help("New page")
                 }
@@ -540,7 +547,7 @@ struct JotvellaWindow: View {
         guard !query.isEmpty else { return true }
         let tableText = (page.tables + page.contentBlocks.compactMap(\.table)).flatMap(\.cells).flatMap { $0 }.joined(separator: " ")
         let blockText = page.contentBlocks.compactMap(\.text).joined(separator: " ")
-        return [page.title, page.body, blockText, tableText].contains { $0.localizedStandardContains(query) }
+        return [page.title, page.body, blockText, tableText, (page.tags ?? []).joined(separator: " ")].contains { $0.localizedStandardContains(query) }
     }
 
     private var editor: some View {
