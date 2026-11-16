@@ -42,6 +42,28 @@ final class NotebookStore: ObservableObject {
             persist()
         }
         if selectedNotebook == nil { selectFirstPage() }
+        moveSectionIconsToBook()
+    }
+
+    /// One time: every section switches to the closed-book icon. After that, icons picked
+    /// from the section icon picker are left alone.
+    private func moveSectionIconsToBook() {
+        let key = "didMoveAllSectionIconsToBookClosed"
+        guard !UserDefaults.standard.bool(forKey: key) else { return }
+        UserDefaults.standard.set(true, forKey: key)
+        if Self.setAllSectionIcons(in: &notebooks) { persist() }
+    }
+
+    /// Returns true if any section changed.
+    static func setAllSectionIcons(in notebooks: inout [Notebook], to symbol: String = NoteSection.defaultIcon) -> Bool {
+        var changed = false
+        for n in notebooks.indices {
+            for s in notebooks[n].sections.indices where notebooks[n].sections[s].iconSymbol != symbol {
+                notebooks[n].sections[s].iconSymbol = symbol
+                changed = true
+            }
+        }
+        return changed
     }
 
     var packagesRoot: URL { root.appendingPathComponent("Notebooks", isDirectory: true) }

@@ -513,3 +513,34 @@ final class LibraryBackupTests: XCTestCase {
         XCTAssertEqual(files.count, 2)
     }
 }
+
+
+final class SectionIconTests: XCTestCase {
+    func testFolderAndMissingIconsBecomeBook() throws {
+        let legacy = try JSONDecoder().decode(NoteSection.self, from: Data(#"{"name":"A","pages":[],"iconSymbol":"folder"}"#.utf8))
+        XCTAssertEqual(legacy.iconSymbol, "book.closed")
+        let missing = try JSONDecoder().decode(NoteSection.self, from: Data(#"{"name":"A","pages":[]}"#.utf8))
+        XCTAssertEqual(missing.iconSymbol, "book.closed")
+        XCTAssertEqual(NoteSection(name: "New", pages: []).iconSymbol, "book.closed")
+    }
+
+    func testChosenIconsAreKept() throws {
+        let chosen = try JSONDecoder().decode(NoteSection.self, from: Data(#"{"name":"A","pages":[],"iconSymbol":"lightbulb"}"#.utf8))
+        XCTAssertEqual(chosen.iconSymbol, "lightbulb")
+    }
+}
+
+
+@MainActor
+final class SectionIconMigrationTests: XCTestCase {
+    func testEverySectionBecomesBook() {
+        var notebooks = [Notebook(name: "N", sections: [
+            NoteSection(name: "a", pages: [], iconSymbol: "briefcase"),
+            NoteSection(name: "b", pages: [], iconSymbol: "lightbulb"),
+            NoteSection(name: "c", pages: [], iconSymbol: "book.closed"),
+        ])]
+        XCTAssertTrue(NotebookStore.setAllSectionIcons(in: &notebooks))
+        XCTAssertEqual(notebooks[0].sections.map(\.iconSymbol), ["book.closed", "book.closed", "book.closed"])
+        XCTAssertFalse(NotebookStore.setAllSectionIcons(in: &notebooks))
+    }
+}
