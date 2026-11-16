@@ -404,3 +404,112 @@ final class PageContentUndoTests: XCTestCase {
         XCTAssertEqual(restored.images.count, 1)
     }
 }
+
+@MainActor
+final class LibraryBackupTests: XCTestCase {
+    private var sandbox: URL!
+
+    override func setUpWithError() throws {
+        sandbox = FileManager.default.temporaryDirectory.appendingPathComponent("jotvella-backup-test-\(UUID().uuidString)", isDirectory: true)
+        try FileManager.default.createDirectory(at: sandbox.appendingPathComponent("Library"), withIntermediateDirectories: true)
+        setenv("JOTVELLA_DATA_DIRECTORY", sandbox.appendingPathComponent("Library").path, 1)
+    }
+
+    override func tearDownWithError() throws {
+        unsetenv("JOTVELLA_DATA_DIRECTORY")
+        try? FileManager.default.removeItem(at: sandbox)
+    }
+
+    private func makeStoreWithContent() throws -> (NotebookStore, UUID) {
+        let store = NotebookStore()
+        store.addNotebook()
+        let pageID = try XCTUnwrap(store.selectedPage)
+        store.updatePage { page in
+            page.title = "Original"
+            page.tags = ["keep"]
+            page.contentBlocks = [.textBlock("important text")]
+        }
+        store.addImage(data: Data([9, 8, 7]), forPageID: pageID, at: CGPoint(x: 20, y: 200))
+        return (store, pageID)
+    }
+
+    func testBackupThenRestoreBringsBackDeletedWork() async throws {
+        let (store, pageID) = try makeStoreWithContent()
+        let zip = sandbox.appendingPathComponent("backup.zip")
+        let info = try await store.createBackup(to: zip)
+        XCTAssertEqual(info.notebookCount, store.notebooks.count)
+        XCTAssertTrue(FileManager.default.fileExists(atPath: zip.path))
+
+        // Lose the work, then add something new that the restore should replace.
+        let notebookID = try XCTUnwrap(store.currentNotebook?.id)
+        let sectionID = try XCTUnwrap(store.currentSection?.id)
+        store.deletePage(pageID, from: sectionID, in: notebookID)
+        store.addPage()
+        store.updatePage { $0.title = "Made after backup" }
+        XCTAssertNil(store.notebooks.flatMap(\.sections).flatMap(\.pages).first { $0.id == pageID })
+
+        let prepared = try await NotebookStore.prepareBackup(at: zip)
+        XCTAssertEqual(prepared.info.pageCount, info.pageCount)
+        try await store.restoreLibrary(from: prepared)
+
+        let pages = store.notebooks.flatMap(\.sections).flatMap(\.pages)
+        let restored = try XCTUnwrap(pages.first { $0.id == pageID })
+        XCTAssertEqual(restored.title, "Original")
+        XCTAssertEqual(restored.tags, ["keep"])
+        XCTAssertEqual(restored.contentBlocks.first?.text, "important text")
+        XCTAssertNil(pages.first { $0.title == "Made after backup" })
+        let image = try XCTUnwrap(restored.images.first)
+        XCTAssertEqual(try Data(contentsOf: store.imageURL(image)), Data([9, 8, 7]))
+        XCTAssertNotNil(store.currentPage)
+
+        // The library as it was just before the restore is kept, so the restore can be reversed.
+        let kept = try FileManager.default.contentsOfDirectory(at: store.backupsFolder, includingPropertiesForKeys: nil)
+        XCTAssertTrue(kept.contains { $0.lastPathComponent.hasPrefix("Jotvella Before Restore") })
+    }
+
+    func testRestoredLibrarySurvivesReload() async throws {
+        let (store, pageID) = try makeStoreWithContent()
+        let zip = sandbox.appendingPathComponent("backup.zip")
+        try await store.createBackup(to: zip)
+        store.updatePage { $0.title = "Changed" }
+        try await store.restoreLibrary(from: try await NotebookStore.prepareBackup(at: zip))
+        store.saveNow()
+        let reopened = NotebookStore()
+        let page = reopened.notebooks.flatMap(\.sections).flatMap(\.pages).first { $0.id == pageID }
+        XCTAssertEqual(page?.title, "Original")
+    }
+
+    func testNonBackupZipIsRejected() async throws {
+        let folder = sandbox.appendingPathComponent("random", isDirectory: true)
+        try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+        try Data("hi".utf8).write(to: folder.appendingPathComponent("note.txt"))
+        let zip = sandbox.appendingPathComponent("random.zip")
+        try NotebookStore.runTool("/usr/bin/ditto", ["-c", "-k", "--keepParent", folder.path, zip.path])
+        do {
+            _ = try await NotebookStore.prepareBackup(at: zip)
+            XCTFail("a random zip must not be accepted")
+        } catch {
+            XCTAssertTrue(error is BackupError)
+        }
+    }
+
+    func testAutomaticBackupRunsOncePerDayAndKeepsNewest() async throws {
+        let (store, _) = try makeStoreWithContent()
+        store.runAutomaticBackupIfNeeded(keeping: 2)
+        for _ in 0..<50 where store.automaticBackupInProgress { try await Task.sleep(nanoseconds: 100_000_000) }
+        var files = try FileManager.default.contentsOfDirectory(at: store.backupsFolder, includingPropertiesForKeys: nil).filter { $0.lastPathComponent.hasPrefix("Jotvella Auto Backup") }
+        XCTAssertEqual(files.count, 1)
+
+        store.runAutomaticBackupIfNeeded(keeping: 2)   // within a day: no second backup
+        files = try FileManager.default.contentsOfDirectory(at: store.backupsFolder, includingPropertiesForKeys: nil).filter { $0.lastPathComponent.hasPrefix("Jotvella Auto Backup") }
+        XCTAssertEqual(files.count, 1)
+
+        // Age the backup by two days: a new one is made and old ones beyond the limit are removed.
+        for url in files { try FileManager.default.setAttributes([.modificationDate: Date().addingTimeInterval(-2 * 86400)], ofItemAtPath: url.path) }
+        try await Task.sleep(nanoseconds: 1_100_000_000)
+        store.runAutomaticBackupIfNeeded(keeping: 2)
+        for _ in 0..<50 where store.automaticBackupInProgress { try await Task.sleep(nanoseconds: 100_000_000) }
+        files = try FileManager.default.contentsOfDirectory(at: store.backupsFolder, includingPropertiesForKeys: nil).filter { $0.lastPathComponent.hasPrefix("Jotvella Auto Backup") }
+        XCTAssertEqual(files.count, 2)
+    }
+}

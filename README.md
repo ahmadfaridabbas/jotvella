@@ -19,6 +19,7 @@ macOS 13+ · Apple Silicon + Intel
 - Local-first storage with optional iCloud sync
 - OneNote interoperability (read `.one` / `.onetoc2` / `.onepkg`) via public specs
 - Fast full-text search with background indexing
+- Backup and restore: one-file library backups (File menu), plus an automatic daily backup that keeps the last seven
 
 ## Tech stack
 

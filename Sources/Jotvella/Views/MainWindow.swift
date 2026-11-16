@@ -66,10 +66,13 @@ struct JotvellaWindow: View {
                     .help("Create a new section in the current notebook")
                 Menu {
                     Button("OneNote Folder (.one files)…", systemImage: "square.and.arrow.down", action: importOneNoteSection)
+                    Divider()
+                    Button("Back Up Library…", systemImage: "externaldrive.badge.plus") { LibraryBackupController.backUp(store) }
+                    Button("Restore from Backup…", systemImage: "arrow.counterclockwise") { LibraryBackupController.restore(store) }
                 } label: {
                     Image(systemName: "square.and.arrow.down")
                 }
-                .help("Import OneNote sections from a folder")
+                .help("Import OneNote sections, back up or restore the library")
                 Menu {
                     Button("System", systemImage: "circle.lefthalf.filled") { appearance = "system" }
                     Button("Light", systemImage: "sun.max") { appearance = "light" }

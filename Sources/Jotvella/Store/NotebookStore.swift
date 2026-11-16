@@ -14,9 +14,10 @@ final class NotebookStore: ObservableObject {
     @Published var selectedSection: UUID?
     @Published var selectedPage: UUID?
     @Published var query = ""
-    private let root: URL
-    private let persistenceQueue = DispatchQueue(label: "com.jotvella.notebooks.persistence", qos: .utility)
+    let root: URL
+    let persistenceQueue = DispatchQueue(label: "com.jotvella.notebooks.persistence", qos: .utility)
     private var pendingPersist: DispatchWorkItem?
+    var automaticBackupInProgress = false
 
     init() {
         let base = ProcessInfo.processInfo.environment["JOTVELLA_DATA_DIRECTORY"].map { URL(fileURLWithPath: $0, isDirectory: true) }
@@ -43,7 +44,7 @@ final class NotebookStore: ObservableObject {
         if selectedNotebook == nil { selectFirstPage() }
     }
 
-    private var packagesRoot: URL { root.appendingPathComponent("Notebooks", isDirectory: true) }
+    var packagesRoot: URL { root.appendingPathComponent("Notebooks", isDirectory: true) }
     /// OneNote exposes each paragraph as a separate block. Keep adjacent plain
     /// paragraphs in one editor so the editor's minimum block height does not
     /// create a large blank area between every paragraph.
@@ -94,7 +95,7 @@ final class NotebookStore: ObservableObject {
     }
 
     /// Repair pages imported by earlier builds when the notebook is loaded.
-    private static func joiningAdjacentPlainTextBlocks(in notebooks: [Notebook]) -> [Notebook] {
+    static func joiningAdjacentPlainTextBlocks(in notebooks: [Notebook]) -> [Notebook] {
         notebooks.map { original in
             var notebook = original
             notebook.sections = notebook.sections.map { originalSection in
@@ -130,7 +131,7 @@ final class NotebookStore: ObservableObject {
         let target = FileManager.default.fileExists(atPath: package.path) ? package : packagesRoot
         NSWorkspace.shared.activateFileViewerSelecting([target])
     }
-    private func loadNotebookPackages() -> [Notebook]? {
+    func loadNotebookPackages() -> [Notebook]? {
         guard let urls = try? FileManager.default.contentsOfDirectory(at: packagesRoot, includingPropertiesForKeys: nil),
               !urls.isEmpty else { return nil }
         let decoder = JSONDecoder()

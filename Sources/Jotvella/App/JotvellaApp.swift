@@ -12,12 +12,15 @@ struct JotvellaApp: App {
         WindowGroup(id: "main") {
             JotvellaWindow()
                 .environmentObject(store)
-                .onAppear { applyAppearance(appearance) }
+                .onAppear {
+                    applyAppearance(appearance)
+                    store.runAutomaticBackupIfNeeded()
+                }
                 .onChange(of: appearance) { newValue in
                     applyAppearance(newValue)
                 }
                 .onChange(of: scenePhase) { phase in
-                    if phase != .active { store.saveNow() }
+                    if phase != .active { store.saveNow() } else { store.runAutomaticBackupIfNeeded() }
                 }
                 .frame(minWidth: 960, minHeight: 650)
         }
@@ -56,6 +59,10 @@ struct JotvellaApp: App {
             CommandGroup(replacing: .saveItem) {
                 Button("Save") { store.saveNow() }
                     .keyboardShortcut("s", modifiers: [.command])
+                Divider()
+                Button("Back Up Library…") { LibraryBackupController.backUp(store) }
+                Button("Restore from Backup…") { LibraryBackupController.restore(store) }
+                Button("Show Backups in Finder") { LibraryBackupController.showBackupsInFinder(store) }
             }
         }
     }
